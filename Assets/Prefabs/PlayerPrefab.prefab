@@ -15,8 +15,10 @@ GameObject:
   - component: {fileID: 8275633195144955084}
   - component: {fileID: 8275633195144955087}
   - component: {fileID: 8275633195144955089}
+  - component: {fileID: 8088737325387515467}
   - component: {fileID: 7395767012778082336}
-  - component: {fileID: 365594382302467615}
+  - component: {fileID: 1823827311767954355}
+  - component: {fileID: 4300969461340937948}
   m_Layer: 10
   m_Name: PlayerPrefab
   m_TagString: Player
@@ -229,7 +231,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 3
+  m_GravityScale: 7
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -247,6 +249,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4e1c15e42647614ab40b63c6ea3cb07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8088737325387515467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8275633195144955091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4db8bc0fac47494cbb59985d48104af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7395767012778082336
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,14 +273,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5a46aee3afb6dd459667613bfe0eb69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minRopeLength: 2
-  maxRopeLength: 20
-  expandContractRate: 0.025
-  ropeConstraintPrefab: {fileID: 1258588410672618, guid: a13ab1f480c02ad479cbe520c8a202da,
-    type: 3}
+  minRopeLength: 3
+  maxRopeLength: 35
+  contractSpeed: 0.15
+  loosenSpeed: 0.15
   hookableZonePrefab: {fileID: 3653088522188594357, guid: bd445ddcadbb4d64c8ad2197d75fbefe,
     type: 3}
---- !u!247 &365594382302467615
+--- !u!232 &1823827311767954355
+DistanceJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8275633195144955091}
+  m_Enabled: 0
+  serializedVersion: 4
+  m_EnableCollision: 1
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 0
+  m_Anchor: {x: 0, y: 0.5}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_AutoConfigureDistance: 0
+  m_Distance: 2
+  m_MaxDistanceOnly: 1
+--- !u!247 &4300969461340937948
 ConstantForce2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -5,11 +5,16 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
     private GrappleHook grappleHook;
+    private PlayerMovement playerMovement;
 
     void Start()
     {
         grappleHook = gameObject.GetComponent<GrappleHook>();
+        playerMovement = gameObject.GetComponent<PlayerMovement>();
     }
+
+    private int getVerticalInput() { return Input.GetAxis("Vertical").CompareTo(0); }
+    private int getHorizontalInput() { return Input.GetAxis("Horizontal").CompareTo(0); }
 
     void checkSwingingInput()
     {
@@ -17,26 +22,24 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetButtonUp("Fire1"))
         {
             grappleHook.release();
+            playerMovement.resetSwing();
         }
-
-        switch (Input.GetAxis("Vertical").CompareTo(0))
+        else
         {
-            case 1:
+            int vert = getVerticalInput();
+            if (vert == 1)
                 grappleHook.contract();
-                break;
-            case -1:
+            else if (vert == -1)
                 grappleHook.loosen();
-                break;
-        }
 
-        //if (Input.GetButtonDown("Horizontal"))
-        //{
-            int hor = Input.GetAxis("Horizontal").CompareTo(0);
+            int hor = getHorizontalInput();
             if (hor == 1)
                 grappleHook.swingRight();
             else if (hor == -1)
                 grappleHook.swingLeft();
-        //}
+            else
+                grappleHook.resetSwing();
+        }
 
     }
 
@@ -64,11 +67,11 @@ public class PlayerController : MonoBehaviour {
             case (-2): //down-right pressed
                 break;
         }*/
-
         if (Input.GetButtonDown("Fire1"))
         {
             grappleHook.fire( Direction.getDpadDirection() );
         }
+        grappleHook.highlightBestHook(Direction.getDpadDirection());
 
     }
 

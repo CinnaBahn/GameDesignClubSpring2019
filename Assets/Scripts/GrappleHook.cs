@@ -6,72 +6,59 @@ public class GrappleHook : MonoBehaviour
 {
     //public parameters
     public bool swinging { get; set; }
-    public float minRopeLength = 2;
-    public float maxRopeLength = 20;
-    private float idealHookDistance; //maybe set this to last constraint scale? (keep rope length ~same)
-    public float expandContractRate = .025f; //how fast the rope will contract/loosen when holding up/down
-    private float pullRate = .1f; //to avoid losing velocity when contracting rope, this is the amount the player will "jump" to not get stuck inside circle constraint
+    public float minRopeLength = 3;
+    public float maxRopeLength = 35;
+    public float contractSpeed = .15f;
+    public float loosenSpeed = .15f;
 
     //prefabs to instantiate
-    public GameObject ropeConstraintPrefab;
     public GameObject hookableZonePrefab;
 
     //components
-    private GameObject ropeConstraint;
     private LineRenderer lineRenderer;
     private CircleCollider2D hookableZone;
-    private Rigidbody2D rb;
-    private ConstantForce2D force;
+    private ConstantForce2D swingForce;
+    private DistanceJoint2D ropeJoint;
 
     //hooks and stuff
-    private Collider2D[] hookables = new Collider2D[10]; //too few?
-    private float dist;
+    private GameObject best = null;
+    private Color bestOriginalColor;
     private GameObject hookedGO;
     //private GameObject oldBest;
 
-    void setupHookableZone()
+    void setupComponents()
     {
+        //rope joint
+        ropeJoint = gameObject.GetComponent<DistanceJoint2D>();
+        //hookable zone
         hookableZone = Instantiate<GameObject>(hookableZonePrefab).GetComponent<CircleCollider2D>();
-        hookableZone.radius = maxRopeLength;
-    }
-
-    void setupLineRenderer()
-    {
+        hookableZone.radius = maxRopeLength / 2;
+        //line renderer
         lineRenderer = gameObject.GetComponent<LineRenderer>();
         gameObject.GetComponent<LineRenderer>().positionCount = 2;
+        //swing force
+        swingForce = GetComponent<ConstantForce2D>();
     }
 
-    void setupRopeConstraint() { ropeConstraint = Instantiate<GameObject>(ropeConstraintPrefab); }
-    void setupRigidBody() { rb = gameObject.GetComponent<Rigidbody2D>(); }
-    void setupForce() { force = GetComponent<ConstantForce2D>(); }
+    private void swing(EDirection dir) { swingForce.force = Direction.getDirectionVector(dir) * 10; }
+    public void swingRight() { swing(EDirection.RIGHT); }
+    public void swingLeft() { swing(EDirection.LEFT); }
+    public void resetSwing() { swingForce.force = Vector2.zero; }
 
     void Start()
     {
-        setupLineRenderer();
-        setupRopeConstraint();
-        setupHookableZone();
-        setupRigidBody();
-        setupForce();
-        idealHookDistance = maxRopeLength * .5f;
+        setupComponents();
     }
 
     private void Update()
     {
         hookableZone.transform.position = gameObject.transform.position;
-        /*GameObject newBest = getBestHook(Direction.getDpadDirection()).gameObject;
-        print(newBest);
-        if(!newBest.Equals(oldBest))
-        {
-            oldBest.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1);
-            newBest.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0);
-            oldBest = newBest;
-        }*/
-        resetSwing();
     }
 
     //Returns an array of Collider2Ds of GameObjects within maxRopeLength
     private Collider2D[] getHookables()
     {
+        Collider2D[] hookables = new Collider2D[5]; //make sure to not clump hooks together!
         hookableZone.transform.position = gameObject.transform.position;
         ContactFilter2D c = new ContactFilter2D();
         c.SetLayerMask(1 << LayerMask.NameToLayer("Hook"));
@@ -83,7 +70,7 @@ public class GrappleHook : MonoBehaviour
     private float rateHook( Collider2D hook, EDirection aimDir)
     {
         float distRating = 1 / Vector2.Distance( new Vector2(transform.position.x, transform.position.y)
-                                                    + Direction.getDirectionVector(aimDir) * idealHookDistance,
+                                                    + Direction.getDirectionVector(aimDir) * maxRopeLength * .75f,
                                                     hook.transform.position);
         return distRating;
     }
@@ -91,44 +78,64 @@ public class GrappleHook : MonoBehaviour
     //Returns the best hook (Collider2D) for a particular aiming direction
     private Collider2D getBestHook( EDirection aimDir )
     {
-        Collider2D best = null;
+        Collider2D bestHook = null;
         float bestRating = 0;
-        foreach(Collider2D hook in getHookables())
+        foreach(Collider2D currentHook in getHookables())
         {
-            if (!hook)
+            if (!currentHook)
                 continue;
 
-            float rating = rateHook(hook, aimDir);
-            if(rating > bestRating)
+            float currentRating = rateHook(currentHook, aimDir);
+            if(currentRating > bestRating)
             {
-                best = hook;
-                bestRating = rating;
+                bestHook = currentHook;
+                bestRating = currentRating;
             }
         }
-        return best;
+        return bestHook;
     }
 
+    //Turn the hook being aimed at red
+    public void highlightBestHook( EDirection aimDir )
+    {
+        Collider2D c = getBestHook(aimDir);
+        if (!c) //if new best is null, skip
+            return;
+        GameObject newBest = c.gameObject;
+        if(!newBest.Equals(best))
+        {
+            //TODO FIX!!!!!!!!!!!!!!
+            if (best) //if last best wasn't null
+                best.GetComponent<SpriteRenderer>().color = bestOriginalColor;
+            bestOriginalColor = newBest.GetComponent<SpriteRenderer>().color;
+            newBest.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0);
+            best = newBest;
+        }
+    }
 
     public void fire( EDirection dir )
     {
-
-        Vector3 position = gameObject.transform.position;
-
         Collider2D hit = getBestHook( dir );
         if (hit) {
+            //variables
             swinging = true;
             hookedGO = hit.gameObject;
-            ropeConstraint.transform.parent = hookedGO.transform;
 
-            ropeConstraint.SetActive(true);
+            //enable the rope physics
+            ropeJoint.distance = Vector2.Distance(transform.position, hookedGO.transform.position);
+            ropeJoint.connectedBody = hookedGO.GetComponent<Rigidbody2D>();
+            ropeJoint.enabled = true;
+            
+            //draw the rope
             lineRenderer.enabled = true;
+            StartCoroutine("drawRope");
 
-            dist = Mathf.Sqrt(Mathf.Pow(hookedGO.transform.position.x - position.x, 2) + Mathf.Pow(hookedGO.transform.position.y - position.y, 2));
-            dist = 1 + dist * 2f;
-            ropeConstraint.transform.position = hookedGO.transform.position;
-            ropeConstraint.transform.localScale = new Vector3(dist / hookedGO.transform.localScale.x, dist / hookedGO.transform.localScale.y, 0); //adjust for hooked object's scale
-
-            StartCoroutine("updateRope");
+            //check and call grapple events
+            Event target = hookedGO.GetComponent<Event>();
+            if (target)
+                if (target.type == EEventType.ON_GRAPPLE)
+                    target.target.SendMessage(target.function);
+            //MAKE IT HANDLE MULTIPLE EVENTS ON 1 GO
         }
     }
 
@@ -136,35 +143,28 @@ public class GrappleHook : MonoBehaviour
     {
         if (hookedGO)
         {
-            swinging = false;
-            resetSwing();
-            ropeConstraint.SetActive(false);
-            lineRenderer.enabled = false;
+            swinging = ropeJoint.enabled = lineRenderer.enabled = false;
+            //check and call de-grapple events
+            Event target = hookedGO.GetComponent<Event>();
+            if (target)
+                if(target.type == EEventType.ON_RELEASE)
+                    target.target.SendMessage(target.function);
             hookedGO = null;
-            StopCoroutine("updateRope");
+            StopCoroutine("drawRope");
         }
     }
 
-    private void swing(EDirection dir) { force.force = Direction.getDirectionVector(dir) * 10; }
-    public void swingRight() { swing(EDirection.RIGHT); }
-    public void swingLeft() { swing(EDirection.LEFT); }
-    public void resetSwing() { force.force = Vector2.zero; }
-
     public void contract()
     {
-        rb.position += new Vector2(0, pullRate);
-        float newScale = Mathf.Clamp(ropeConstraint.transform.localScale.x - expandContractRate, minRopeLength, maxRopeLength);
-        ropeConstraint.transform.localScale = new Vector3(newScale, newScale, 0);
+        ropeJoint.distance = Mathf.Clamp(ropeJoint.distance - contractSpeed, minRopeLength, maxRopeLength / 2);
     }
 
     public void loosen()
     {
-        rb.position -= new Vector2(0, pullRate);
-        float newScale = Mathf.Clamp(ropeConstraint.transform.localScale.x + expandContractRate, minRopeLength, maxRopeLength);
-        ropeConstraint.transform.localScale = new Vector3(newScale, newScale, 0);
+        ropeJoint.distance = Mathf.Clamp(ropeJoint.distance + loosenSpeed, minRopeLength, maxRopeLength / 2);
     }
 
-    private IEnumerator updateRope()
+    private IEnumerator drawRope()
     {
         while(true)
         {
