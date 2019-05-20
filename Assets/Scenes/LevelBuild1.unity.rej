@@ -1,0 +1,39 @@
+diff a/Assets/Scenes/LevelBuild1.unity b/Assets/Scenes/LevelBuild1.unity	(rejected hunks)
+@@ -5662,7 +5662,37 @@
+   m_WasSpriteAssigned: 1
+   m_MaskInteraction: 0
+   m_SpriteSortPoint: 0
++<<<<<<< HEAD
+ --- !u!1 &1026931011
++=======
++--- !u!1 &633592505 stripped
++GameObject:
++  m_CorrespondingSourceObject: {fileID: 3004138335236636724, guid: 3c21508c145ab9745804c5e76dfc049f,
++    type: 3}
++  m_PrefabInstance: {fileID: 3004138336075002092}
++  m_PrefabAsset: {fileID: 0}
++--- !u!4 &633592510 stripped
++Transform:
++  m_CorrespondingSourceObject: {fileID: 3004138335236636720, guid: 3c21508c145ab9745804c5e76dfc049f,
++    type: 3}
++  m_PrefabInstance: {fileID: 3004138336075002092}
++  m_PrefabAsset: {fileID: 0}
++--- !u!114 &633592511
++MonoBehaviour:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 633592505}
++  m_Enabled: 1
++  m_EditorHideFlags: 0
++  m_Script: {fileID: 11500000, guid: 698ee67dcd0f15b4984946e120617e70, type: 3}
++  m_Name: 
++  m_EditorClassIdentifier: 
++  livesText: {fileID: 1775945986}
++  timeText: {fileID: 996731815}
++--- !u!1 &662285400
++>>>>>>> origin/gui
+ GameObject:
+   m_ObjectHideFlags: 0
+   m_CorrespondingSourceObject: {fileID: 0}
