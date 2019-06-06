@@ -194,7 +194,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.5
+      scalar: 1.2
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -247,7 +247,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 55
+      scalar: 25
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -4786,6 +4786,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 337878668541079212}
+  - component: {fileID: 3549364374709881931}
   m_Layer: 0
   m_Name: FanPrefab
   m_TagString: Untagged
@@ -4810,6 +4811,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3549364374709881931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 337878668541079213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dceb454475e16e408f7c895a791a63e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  strength: 25
+  range: 30
 --- !u!1 &337878668901696819
 GameObject:
   m_ObjectHideFlags: 0
