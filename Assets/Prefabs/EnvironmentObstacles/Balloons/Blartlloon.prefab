@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1808573965965286617}
   m_Layer: 0
-  m_Name: BlartlloonPrefab
+  m_Name: Blartlloon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -181,6 +181,7 @@ GameObject:
   - component: {fileID: 1808573966625187704}
   - component: {fileID: 1808573966625187705}
   - component: {fileID: 1808573966625187711}
+  - component: {fileID: 183380840768142178}
   m_Layer: 11
   m_Name: Hook
   m_TagString: Untagged
@@ -413,3 +414,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   from: {fileID: 1808573966334727933}
   to: {fileID: 1808573966625187702}
+--- !u!114 &183380840768142178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1808573966625187702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fdb52b88ccd7d04cb933aa7025a458c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

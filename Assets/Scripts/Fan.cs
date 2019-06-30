@@ -5,40 +5,41 @@ using UnityEngine;
 [ExecuteAlways]
 public class Fan : MonoBehaviour
 {
-    public float strength = 25;
-    public float range = 30;
-    // Start is called before the first frame update
+    [Range(1, 20)]
+    public int blowStrength = 3;
+    [Range(1, 100)]
+    public int blowRange = 10;
+    [Range(1, 10)]
+    public int fanWidth = 1;
+
     void Update()
     {
+        //done after value update in editor inspector, doesn't run during game
         if (!Application.isPlaying)
         {
             Transform current = transform.GetChild(0);
-            updateZone(current);
-            updateStrength(current);
+            ParticleSystem particles = GetComponentInChildren<ParticleSystem>();
+            Transform fanCasing = transform.GetChild(1);
 
-            Transform particles = transform.GetChild(2);
-            updateParticles(particles);
+            //adjust scaling of vars
+            int strengthScale = blowStrength * 10;
+            int rangeScale = blowRange * 5;
+            float widthScale = fanWidth * 10;
+
+            //current
+            current.GetComponent<AreaEffector2D>().forceMagnitude = strengthScale; //strength
+            current.localScale = new Vector3(rangeScale, widthScale, 1); //scale
+            current.localPosition = new Vector3(rangeScale / 2, 0, 0); //pos
+
+            //particles
+            particles.startSpeed = strengthScale; //velocity
+            particles.startLifetime = rangeScale / strengthScale; //lifetime
+            particles.transform.localScale = new Vector3(1, 1, 1); //scale (locked)
+            particles.transform.position = gameObject.transform.position; //pos (locked)
+
+            //casing
+            fanCasing.localScale = new Vector3(3, widthScale, 1); //scale
+            fanCasing.localPosition = new Vector3(0, 0, 0); //pos (locked)
         }
     }
-
-    private void updateZone(Transform c)
-    {
-        Vector3 originalS = c.localScale;
-        c.localScale = new Vector3(range, originalS.y, originalS.z);
-        c.localPosition = new Vector3(range / 2, 0, 0);
-    }
-
-    private void updateStrength(Transform c)
-    {
-        c.GetComponent<AreaEffector2D>().forceMagnitude = strength;
-    }
-
-    private void updateParticles(Transform p)
-    {
-        ParticleSystem ps = p.GetComponent<ParticleSystem>();
-        ps.startSpeed = strength;
-        ps.startLifetime = range / strength;
-    }
-
-
 }

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour {
 
-    private static Camera cam; //the Camera component attached to the Camera GameObject
-    private static List<CameraZone> insideZones = new List<CameraZone>(); //List of all the CameraZones the player is currently inside
-    private static GameObject player;
+    private Camera cam; //the Camera component attached to the Camera GameObject
+    private GameObject player;
+    private List<CameraZone> insideZones = new List<CameraZone>(); //List of all the CameraZones the player is currently inside
 
     private float defaultSize; //how zoomed in the Camera should be when not inside a CameraZone
     public float defaultPlayerFocus;
@@ -18,17 +18,23 @@ public class PlayerCamera : MonoBehaviour {
     private float blendedPlayerFocus;
     private float blendedFollowSpeed;
 
+    public static PlayerCamera instance;
 
-    private void Start()
+    void Awake()
     {
+        instance = this;
         cam = gameObject.GetComponent<Camera>();
-        player = GameObject.FindGameObjectWithTag("Player");
         defaultSize = cam.orthographicSize;
     }
 
+    private void Start()
+    {
+        player = PlayerManager.instance.getPlayer();
+    }
+
     //Public-facing functions for interacting with insideZones
-    public static void addZone(CameraZone zone) { insideZones.Add( zone ); }
-    public static  void removeZone(CameraZone zone) { insideZones.Remove( zone ); }
+    public void addZone(CameraZone zone) { insideZones.Add( zone ); }
+    public void removeZone(CameraZone zone) { insideZones.Remove( zone ); }
 
     //Converts a 2D camera position to 3D
     private Vector3 vec2To3(Vector2 vec2) { return new Vector3(vec2.x, vec2.y, -1); }

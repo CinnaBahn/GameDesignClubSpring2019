@@ -19,6 +19,7 @@ public class GrappleHook : MonoBehaviour
     private CircleCollider2D hookableZone;
     private ConstantForce2D swingForce;
     private DistanceJoint2D ropeJoint;
+    private Grapplable grapplable;
 
     //hooks and stuff
     private GameObject best = null;
@@ -26,7 +27,12 @@ public class GrappleHook : MonoBehaviour
     private GameObject hookedGO;
     //private GameObject oldBest;
 
-    void setupComponents()
+    private void swing(EDirection dir) { swingForce.force = Direction.getDirectionVector(dir) * 10; }
+    public void swingRight() { swing(EDirection.RIGHT); }
+    public void swingLeft() { swing(EDirection.LEFT); }
+    public void resetSwing() { swingForce.force = Vector2.zero; }
+
+    void Start()
     {
         //rope joint
         ropeJoint = gameObject.GetComponent<DistanceJoint2D>();
@@ -38,16 +44,6 @@ public class GrappleHook : MonoBehaviour
         gameObject.GetComponent<LineRenderer>().positionCount = 2;
         //swing force
         swingForce = GetComponent<ConstantForce2D>();
-    }
-
-    private void swing(EDirection dir) { swingForce.force = Direction.getDirectionVector(dir) * 10; }
-    public void swingRight() { swing(EDirection.RIGHT); }
-    public void swingLeft() { swing(EDirection.LEFT); }
-    public void resetSwing() { swingForce.force = Vector2.zero; }
-
-    void Start()
-    {
-        setupComponents();
     }
 
     private void Update()
@@ -118,8 +114,12 @@ public class GrappleHook : MonoBehaviour
         Collider2D hit = getBestHook( dir );
         if (hit) {
             //variables
-            swinging = true;
             hookedGO = hit.gameObject;
+            grapplable = hookedGO.GetComponent<Grapplable>();
+            swinging = grapplable.grapple();
+
+            if (!swinging)
+                return;
 
             //enable the rope physics
             ropeJoint.distance = Vector2.Distance(transform.position, hookedGO.transform.position);
@@ -128,7 +128,7 @@ public class GrappleHook : MonoBehaviour
             
             //draw the rope
             lineRenderer.enabled = true;
-            StartCoroutine("drawRope");
+            StartCoroutine(holdOn());
 
             //check and call grapple events
             Event target = hookedGO.GetComponent<Event>();
@@ -141,16 +141,17 @@ public class GrappleHook : MonoBehaviour
 
     public void release()
     {
+        swinging = ropeJoint.enabled = lineRenderer.enabled = false;
+        StopCoroutine(holdOn());
         if (hookedGO)
         {
-            swinging = ropeJoint.enabled = lineRenderer.enabled = false;
             //check and call de-grapple events
             Event target = hookedGO.GetComponent<Event>();
             if (target)
                 if(target.type == EEventType.ON_RELEASE)
                     target.target.SendMessage(target.function);
+            grapplable.release();
             hookedGO = null;
-            StopCoroutine("drawRope");
         }
     }
 
@@ -164,10 +165,16 @@ public class GrappleHook : MonoBehaviour
         ropeJoint.distance = Mathf.Clamp(ropeJoint.distance + loosenSpeed, minRopeLength, maxRopeLength / 2);
     }
 
-    private IEnumerator drawRope()
+    private IEnumerator holdOn()
     {
         while(true)
         {
+            if (!hookedGO)
+            {
+                release();
+                break;
+            }
+            //draw
             lineRenderer.SetPosition(0, gameObject.transform.position);
             lineRenderer.SetPosition(1, hookedGO.transform.position);
             yield return null;
