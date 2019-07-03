@@ -6,11 +6,13 @@ public class PlayerController : MonoBehaviour {
 
     private GrappleHook grappleHook;
     private PlayerMovement playerMovement;
+    private HookFinder hookFinder;
 
     void Start()
     {
         grappleHook = gameObject.GetComponent<GrappleHook>();
         playerMovement = gameObject.GetComponent<PlayerMovement>();
+        hookFinder = gameObject.GetComponent<HookFinder>();
     }
 
     private int getVerticalInput() { return Input.GetAxis("Vertical").CompareTo(0); }
@@ -71,13 +73,18 @@ public class PlayerController : MonoBehaviour {
         {
             grappleHook.fire( Direction.getDpadDirection() );
         }
-        grappleHook.highlightBestHook(Direction.getDpadDirection());
+        hookFinder.highlightBestHook(Direction.getDpadDirection());
+
+        if (Input.GetButtonDown("Fire2"))
+        {
+            PlayerManager.instance.resetPosition();
+        }
 
     }
 
 
     void Update () {
-        if (grappleHook.swinging)
+        if (grappleHook.hooked)
             checkSwingingInput();
         else
             checkFallingInput();

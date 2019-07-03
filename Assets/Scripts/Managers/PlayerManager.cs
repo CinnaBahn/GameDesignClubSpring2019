@@ -19,9 +19,11 @@ public class PlayerManager : MonoBehaviour
         grapplehook = player.GetComponent<GrappleHook>();
     }
 
+    public void resetPosition() { player.transform.position = FindObjectOfType<Spawn>().transform.position; }
+
     private void Start()
     {
-        player.transform.position = FindObjectOfType<Spawn>().transform.position;
+        resetPosition();
     }
 
     public GameObject getPlayer() { return player; }
@@ -30,7 +32,7 @@ public class PlayerManager : MonoBehaviour
     public void forceRelease()
     {
         grapplehook.release();
-        print("force!");
+        //print("let go!");
     }
 
     public void die(ECauseOfDeath cause)

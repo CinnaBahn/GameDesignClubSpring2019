@@ -14,13 +14,14 @@ GameObject:
   - component: {fileID: 8275633195144955085}
   - component: {fileID: 8275633195144955084}
   - component: {fileID: 8275633195144955087}
+  - component: {fileID: 1823827311767954355}
+  - component: {fileID: 4300969461340937948}
   - component: {fileID: 8275633195144955089}
   - component: {fileID: 8088737325387515467}
   - component: {fileID: 7395767012778082336}
-  - component: {fileID: 1823827311767954355}
-  - component: {fileID: 4300969461340937948}
+  - component: {fileID: 6472179753222861723}
   m_Layer: 10
-  m_Name: PlayerPrefab
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -237,6 +238,36 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!232 &1823827311767954355
+DistanceJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8275633195144955091}
+  m_Enabled: 0
+  serializedVersion: 4
+  m_EnableCollision: 1
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 0
+  m_Anchor: {x: 0, y: 0.5}
+  m_ConnectedAnchor: {x: 0, y: 0}
+  m_AutoConfigureDistance: 0
+  m_Distance: 2
+  m_MaxDistanceOnly: 1
+--- !u!247 &4300969461340937948
+ConstantForce2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8275633195144955091}
+  m_Enabled: 1
+  m_Force: {x: 0, y: 0}
+  m_RelativeForce: {x: 0, y: 0}
+  m_Torque: 0
 --- !u!114 &8275633195144955089
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,35 +308,17 @@ MonoBehaviour:
   maxRopeLength: 35
   contractSpeed: 0.15
   loosenSpeed: 0.15
-  hookableZonePrefab: {fileID: 3653088522188594357, guid: bd445ddcadbb4d64c8ad2197d75fbefe,
-    type: 3}
---- !u!232 &1823827311767954355
-DistanceJoint2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8275633195144955091}
-  m_Enabled: 0
-  serializedVersion: 4
-  m_EnableCollision: 1
-  m_ConnectedRigidBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_AutoConfigureConnectedAnchor: 0
-  m_Anchor: {x: 0, y: 0.5}
-  m_ConnectedAnchor: {x: 0, y: 0}
-  m_AutoConfigureDistance: 0
-  m_Distance: 2
-  m_MaxDistanceOnly: 1
---- !u!247 &4300969461340937948
-ConstantForce2D:
+--- !u!114 &6472179753222861723
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8275633195144955091}
   m_Enabled: 1
-  m_Force: {x: 0, y: 0}
-  m_RelativeForce: {x: 0, y: 0}
-  m_Torque: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25722f8865d4b19468f35b399529f729, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hookableZonePrefab: {fileID: 3653088522188594357, guid: bd445ddcadbb4d64c8ad2197d75fbefe,
+    type: 3}

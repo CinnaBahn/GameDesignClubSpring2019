@@ -5,7 +5,7 @@ using UnityEngine;
 [ExecuteAlways]
 public class Fan : MonoBehaviour
 {
-    [Range(1, 20)]
+    [Range(1, 50)]
     public int blowStrength = 3;
     [Range(1, 100)]
     public int blowRange = 10;

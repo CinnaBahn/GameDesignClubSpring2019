@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 25722f8865d4b19468f35b399529f729
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - hookableZonePrefab: {fileID: 3653088522188594357, guid: bd445ddcadbb4d64c8ad2197d75fbefe,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
