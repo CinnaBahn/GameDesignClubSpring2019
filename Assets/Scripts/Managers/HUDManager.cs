@@ -16,18 +16,28 @@ public class HUDManager : MonoBehaviour
     void Start()
     {
         instance = this;
-        hud = GameObject.Instantiate(hudPrefab);
-        DontDestroyOnLoad(hud);
-        timeHud = hud.transform.Find("TimeText").GetComponent<Text>();
-        livesHud = hud.transform.Find("LivesText").GetComponent<Text>();
-
+        reassignReferences();
         refreshTimeHud();
         refreshLivesHud();
     }
 
+    private void reassignReferences()
+    {
+        hud = GameObject.Instantiate(hudPrefab);
+        timeHud = hud.transform.Find("TimeText").GetComponent<Text>();
+        livesHud = hud.transform.Find("LivesText").GetComponent<Text>();
+    }
+
     void Update()
     {
-        refreshTimeHud();
+        if (timeHud && livesHud)
+            refreshTimeHud();
+        else
+        {
+            reassignReferences();
+            refreshTimeHud();
+            refreshLivesHud();
+        }
     }
 
     public void refreshTimeHud() { timeHud.text = StatsManager.instance.getTime().ToString(); }

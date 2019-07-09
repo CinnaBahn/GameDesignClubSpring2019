@@ -9,39 +9,30 @@ public class StatsManager : MonoBehaviour
     //time
     private float startTime;
     //lives
-    public int defaultLives = 3;
+    public int defaultLives = 10;
     private int lives;
 
     private void Awake()
     {
-        instance = this;
-        DontDestroyOnLoad(this);
+        if (instance)
+            Destroy(this);
+        else
+            instance = this;
     }
 
     void Start()
     {
         resetTime();
-        lives = defaultLives;
+        resetLives();
     }
 
     //time
-    public void resetTime() { startTime = Time.timeSinceLevelLoad; }
-    public float getTime() { return Time.timeSinceLevelLoad - startTime; }
+    public void resetTime() { startTime = Time.realtimeSinceStartup; }
+    public float getTime() { return Time.realtimeSinceStartup - startTime; }
 
     //lives
     public int getLives() { return lives; }
-    public void loseLife() {
-        print("\nlives before: " + lives);
-        --lives;
-        print("lives after: " + lives);
-        HUDManager.instance.refreshLivesHud();
-    }
-    public void gainLife() {
-        ++lives;
-        HUDManager.instance.refreshLivesHud();
-    }
-    public void resetLives() {
-        lives = defaultLives;
-        HUDManager.instance.refreshLivesHud();
-    }
+    public void loseLife() { --lives; }
+    public void gainLife() { ++lives; }
+    public void resetLives() { lives = defaultLives; }
 }

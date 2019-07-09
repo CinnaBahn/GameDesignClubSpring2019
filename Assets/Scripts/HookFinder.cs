@@ -34,11 +34,13 @@ public class HookFinder : MonoBehaviour
     //Assigns a float value based on the direction we're aiming
     private float rateHook(Collider2D hook, EDirection aimDir)
     {
-        float distRating = 1 / Vector2.Distance(new Vector2(transform.position.x, transform.position.y)
-                                                    + Direction.getDirectionVector(aimDir) * diameter * .75f,
-                                                    hook.transform.position);
-        return distRating;
+        return 1 / Vector2.Distance(new Vector2(transform.position.x, transform.position.y)
+                                    + Direction.getDirectionVector(aimDir) * diameter * .75f,
+                                    hook.transform.position);
     }
+
+    //returns whether there in an object between the player and hook
+    private bool hookObstructed(Collider2D targetHook) { return Physics2D.Raycast(transform.position, targetHook.transform.position - transform.position, Vector2.Distance(targetHook.transform.position, transform.position), LayerMask.NameToLayer("Hook")).collider; }
 
     //Returns the best hook (Collider2D) for a particular aiming direction
     public Collider2D getBestHook(EDirection aimDir)
@@ -47,7 +49,10 @@ public class HookFinder : MonoBehaviour
         float bestRating = 0;
         foreach (Collider2D currentHook in getHookables())
         {
-            if (!currentHook)
+            if (!currentHook) //make sure not null
+                continue;
+
+            if (hookObstructed(currentHook)) //make sure in line of sight
                 continue;
 
             float currentRating = rateHook(currentHook, aimDir);
