@@ -10,36 +10,56 @@ public class HUDManager : MonoBehaviour
     public GameObject hudPrefab;
 
     private GameObject hud;
-    private Text timeHud;
-    private Text livesHud;
+    private Text timeHUD;
+    private Text livesHUD;
+    private Text countdownHUD;
 
-    void Start()
+    private bool hudCreated = false;
+    private bool countdownFinished = false;
+
+    private void Awake()
     {
         instance = this;
-        reassignReferences();
-        refreshTimeHud();
-        refreshLivesHud();
     }
 
-    private void reassignReferences()
+    /*
+    private void OnLevelWasLoaded(int level)
+    {
+        hudCreated = countdownFinished = false;
+    }
+    */
+
+    //create a new hud everytime the level reloads
+    private void createHUD()
     {
         hud = GameObject.Instantiate(hudPrefab);
-        timeHud = hud.transform.Find("TimeText").GetComponent<Text>();
-        livesHud = hud.transform.Find("LivesText").GetComponent<Text>();
+        timeHUD = hud.transform.Find("TimeText").GetComponent<Text>();
+        livesHUD = hud.transform.Find("LivesText").GetComponent<Text>();
+        countdownHUD = hud.transform.Find("CountdownText").GetComponent<Text>();
+        hudCreated = true;
     }
 
     void Update()
     {
-        if (timeHud && livesHud)
-            refreshTimeHud();
-        else
-        {
-            reassignReferences();
-            refreshTimeHud();
-            refreshLivesHud();
+        if(!hudCreated){
+            createHUD();
+            refreshLivesHUD();
         }
+        else if (!countdownFinished)
+        {
+            int timeLeft = GameplayManager.instance.timeUntilControlEnabled;
+            if(timeLeft == 0)
+            {
+                countdownHUD.text = "GO!!!";
+                Destroy(countdownHUD, .5f);
+                countdownFinished = true;
+            }else
+                countdownHUD.text = timeLeft.ToString();
+        }
+        else
+            refreshTimeHUD();
     }
 
-    public void refreshTimeHud() { timeHud.text = StatsManager.instance.getTime().ToString(); }
-    public void refreshLivesHud() { livesHud.text = StatsManager.instance.getLives().ToString(); }
+    public void refreshTimeHUD() { timeHUD.text = StatsManager.instance.getTime().ToString("#.00"); }
+    public void refreshLivesHUD() { livesHUD.text = StatsManager.instance.getLives().ToString(); }
 }

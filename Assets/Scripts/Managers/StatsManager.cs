@@ -27,8 +27,8 @@ public class StatsManager : MonoBehaviour
     }
 
     //time
-    public void resetTime() { startTime = Time.realtimeSinceStartup; }
-    public float getTime() { return Time.realtimeSinceStartup - startTime; }
+    public void resetTime() { startTime = GameplayManager.instance.timeOfControlEnabled; }
+    public float getTime() { return Time.time - GameplayManager.instance.timeOfControlEnabled; }
 
     //lives
     public int getLives() { return lives; }

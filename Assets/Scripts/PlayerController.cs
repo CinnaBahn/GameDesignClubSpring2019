@@ -7,12 +7,14 @@ public class PlayerController : MonoBehaviour {
     private GrappleHook grappleHook;
     private PlayerMovement playerMovement;
     private HookFinder hookFinder;
+    private Sword sword;
 
     void Start()
     {
         grappleHook = gameObject.GetComponent<GrappleHook>();
         playerMovement = gameObject.GetComponent<PlayerMovement>();
         hookFinder = gameObject.GetComponent<HookFinder>();
+        sword = gameObject.GetComponent<Sword>();
     }
 
     private int getVerticalInput() { return Input.GetAxis("Vertical").CompareTo(0); }
@@ -77,6 +79,11 @@ public class PlayerController : MonoBehaviour {
 
         if (Input.GetButtonDown("Fire2"))
         {
+            sword.swing();
+        }
+
+        if (Input.GetButtonDown("Fire3"))
+        {
             PlayerManager.instance.resetPosition();
         }
 
@@ -84,9 +91,10 @@ public class PlayerController : MonoBehaviour {
 
 
     void Update () {
-        if (grappleHook.hooked)
-            checkSwingingInput();
-        else
-            checkFallingInput();
+        if(GameplayManager.instance.controlEnabled)
+            if (grappleHook.hooked)
+                checkSwingingInput();
+            else
+                checkFallingInput();
     }
 }
