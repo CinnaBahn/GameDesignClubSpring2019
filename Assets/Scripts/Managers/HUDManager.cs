@@ -22,12 +22,23 @@ public class HUDManager : MonoBehaviour
         instance = this;
     }
 
-    /*
-    private void OnLevelWasLoaded(int level)
+    private void Start()
     {
-        hudCreated = countdownFinished = false;
+        Countdown.instance.onTick += new onTickEventHandler(updateCountdownHUD);
+        Countdown.instance.onCountdownReached += new onCountdownReachedEventHandler(hideCountdownHUD);
     }
-    */
+
+    private void updateCountdownHUD(float timeLeft)
+    {
+        countdownHUD.text = timeLeft.ToString();
+    }
+
+    private void hideCountdownHUD()
+    {
+        countdownHUD.text = "GO!!!";
+        Destroy(countdownHUD, .5f);
+        countdownFinished = true;
+    }
 
     //create a new hud everytime the level reloads
     private void createHUD()
@@ -45,18 +56,7 @@ public class HUDManager : MonoBehaviour
             createHUD();
             refreshLivesHUD();
         }
-        else if (!countdownFinished)
-        {
-            int timeLeft = GameplayManager.instance.timeUntilControlEnabled;
-            if(timeLeft == 0)
-            {
-                countdownHUD.text = "GO!!!";
-                Destroy(countdownHUD, .5f);
-                countdownFinished = true;
-            }else
-                countdownHUD.text = timeLeft.ToString();
-        }
-        else
+        else if (countdownFinished)
             refreshTimeHUD();
     }
 

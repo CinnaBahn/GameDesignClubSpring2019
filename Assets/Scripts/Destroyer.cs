@@ -9,7 +9,7 @@ public class Destroyer : MonoBehaviour
     {
         Grapplable g = GetComponentInChildren<Grapplable>();
         if (g)
-            g.setCurrentlyGrapplable(false);
+            g.forceStateChange(false);
 
         StartCoroutine(shrink(duration));
     }

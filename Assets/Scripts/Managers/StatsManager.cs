@@ -6,9 +6,9 @@ public class StatsManager : MonoBehaviour
 {
     public static StatsManager instance;
 
-    //time
     private float startTime;
-    //lives
+    private float finalTime;
+    private bool timeStopped;
     public int defaultLives = 10;
     private int lives;
 
@@ -22,13 +22,29 @@ public class StatsManager : MonoBehaviour
 
     void Start()
     {
-        resetTime();
         resetLives();
+        Countdown.instance.onCountdownReached += new onCountdownReachedEventHandler(setStartTime);
+        Goal.instance.onGoalReached += new onGoalReachedEventHandler(stopTime);
+    }
+
+    private void setStartTime()
+    {
+        startTime = Time.time;
     }
 
     //time
-    public void resetTime() { startTime = GameplayManager.instance.timeOfControlEnabled; }
-    public float getTime() { return Time.time - GameplayManager.instance.timeOfControlEnabled; }
+    public float getTime()
+    {
+        if (!timeStopped)
+            return Time.time - startTime;
+        else
+            return finalTime;
+    }
+    public void stopTime()
+    {
+        finalTime = getTime();
+        timeStopped = true;
+    }
 
     //lives
     public int getLives() { return lives; }

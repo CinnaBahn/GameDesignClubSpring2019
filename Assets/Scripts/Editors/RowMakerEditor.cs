@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(RowMaker))]
-[CanEditMultipleObjects]
+[CustomEditor(typeof(RowMaker)), CanEditMultipleObjects]
 public class RowMakerEditor : Editor
 {
     //SerializedProperty copies;
-    RowMaker rowMaker;
+    [SerializeField]
+    public RowMaker rowMaker;
 
     void OnEnable()
     {
@@ -17,7 +17,7 @@ public class RowMakerEditor : Editor
     public override void OnInspectorGUI()
     {
         rowMaker.prefab = (GameObject)EditorGUILayout.ObjectField("Prefab", rowMaker.prefab, typeof(GameObject), false);
-        
+
         rowMaker.copies = EditorGUILayout.IntSlider("Copies", rowMaker.copies, 0, 50);
 
         rowMaker.spacing = EditorGUILayout.FloatField("Spacing", rowMaker.spacing);

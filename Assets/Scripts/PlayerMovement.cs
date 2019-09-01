@@ -13,8 +13,18 @@ public class PlayerMovement : MonoBehaviour
 
     void setupComponents() { force = GetComponent<ConstantForce2D>(); }
 
-    private void Start()
+    private void Awake()
     {
         setupComponents();
+    }
+
+    private void Start()
+    {
+        //GameplayController pc = GetComponent<GameplayController>();
+        GameplayController pc = Controller.gameplayController;
+        pc.onGrappleReleased += new onGrappleReleasedEventHandler(resetSwing);
+        pc.onSwingRelax += new onSwingRelaxEventHandler(resetSwing);
+        pc.onSwingLeft += new onSwingLeftEventHandler(swingLeft);
+        pc.onSwingRight += new onSwingRightEventHandler(swingRight);
     }
 }

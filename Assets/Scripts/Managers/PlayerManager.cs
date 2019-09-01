@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+
+public delegate void onDeathAnimationFinishEventHandler();
 
 public class PlayerManager : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class PlayerManager : MonoBehaviour
     public GameObject playerPrefab;
     private GameObject player;
     private GrappleHook grapplehook;
+
+    public event onDeathAnimationFinishEventHandler onDeathAnimationFinish;
 
     public static PlayerManager instance;
 
@@ -23,6 +26,9 @@ public class PlayerManager : MonoBehaviour
 
     private void Start()
     {
+        // listen to GameplayManager for when the player is ordered to die
+        GameplayManager.instance.onDeath += new onDeathEventHandler(die);
+
         resetPosition();
     }
 
@@ -37,16 +43,17 @@ public class PlayerManager : MonoBehaviour
 
     public void die(ECauseOfDeath cause)
     {
-        StatsManager.instance.loseLife();
-        if (StatsManager.instance.getLives() == 0)
+        //print("oh no i died. i need to animate");
+        StartCoroutine(dieAnimation());
+    }
+
+    private IEnumerator dieAnimation()
+    {
+        for (float i = 0; i < 2; i += Time.deltaTime)
         {
-            GameplayManager.instance.gameOver();
-            StatsManager.instance.resetLives();
+            yield return null;
         }
-        else
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            StatsManager.instance.resetTime();
-        }
+        if (onDeathAnimationFinish != null)
+            onDeathAnimationFinish();
     }
 }

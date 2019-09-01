@@ -5,14 +5,16 @@ using UnityEngine;
 
 // this class duplicates a prefab in a row, useful for rows of hooks that need to be evenly spaced
 [ExecuteAlways]
+[System.Serializable]
 public class RowMaker : MonoBehaviour
 {
     public GameObject prefab;
     public int copies = 2;
     public float spacing = 5;
     public float angle = 0;
-    public float twist = 10;
+    public float twist = 0;
 
+    [SerializeField]
     private List<GameObject> copyList;
 
     // effectively locks copies in place, restricting the level designer to only modify their positions by adjusting the RowMaker script
@@ -25,6 +27,8 @@ public class RowMaker : MonoBehaviour
     // add/delete a single copy per frame (approaching copies specified in RowMaker) and update all copies' positions
     public void preview()
     {
+        if (copyList == null)
+            clean();
         updateCopies();
         updatePositions();
     }
@@ -56,19 +60,44 @@ public class RowMaker : MonoBehaviour
     }
 
     // destroy the copies created during the last edit session (copyList's ref to them was lost, so copyList doesn't know these copies already exist and will create more than desired)
-    private void wipeStrayChildren()
+    private void wipeStrayCopies()
     {
-        for (int i = transform.childCount; i > 0; i--)
-            DestroyImmediate(transform.GetChild(0).gameObject);
+        for(int i = transform.childCount - 1; i >= 0; i--)
+        {
+            GameObject copy = transform.GetChild(i).gameObject;
+            if (!copyList.Contains(copy))
+            {
+                print("wipe");
+                DestroyImmediate(copy);
+            }
+        }
+    }
+
+    // if there are copies leftover from last time that copyList lost reference to, add them to copyList instead of deleting them and making more
+    private void recoverStrayCopies()
+    {
+        for (int i = 0; i < copies && i < transform.childCount; i++)
+        {
+            GameObject copy = transform.GetChild(i).gameObject;
+            if (!copyList.Contains(copy))
+            {
+                print("recover!");
+                addCopy(copy);
+            }
+        }
+
     }
 
     // destroy the preview created during the last edit session and add fresh copies in
     public void clean()
     {
-        wipeStrayChildren();
-
+        print("clean!");
         copyList = new List<GameObject>();
-        for (int i = 0; i < copies; i++)
+
+        recoverStrayCopies();
+        wipeStrayCopies();
+
+        for (int i = transform.childCount; i < copies; i++)
             addCopy();
     }
 
@@ -83,8 +112,20 @@ public class RowMaker : MonoBehaviour
     // create copy and add to copyList
     private void addCopy()
     {
-        GameObject toAdd = GameObject.Instantiate(prefab, transform);
-        copyList.Add(toAdd);
-        DestroyImmediate(toAdd.GetComponent<RowMaker>());
+        string path = AssetDatabase.GetAssetPath(prefab);
+        //remove "Assets/Resources/" and ".prefab" from the path
+        path = path.Replace("Assets/Resources/", "");
+        path = path.Replace(".prefab", "");
+        print(path);
+
+        GameObject copy = Instantiate(Resources.Load(path, typeof(GameObject)), transform) as GameObject;
+        //GameObject copy = GameObject.Instantiate(Resources.Load("Hook", typeof(GameObject)), transform) as GameObject;
+        //GameObject copy = GameObject.Instantiate(prefab, transform);
+        addCopy(copy);
+    }
+
+    private void addCopy(GameObject copy)
+    {
+        copyList.Add(copy);
     }
 }
