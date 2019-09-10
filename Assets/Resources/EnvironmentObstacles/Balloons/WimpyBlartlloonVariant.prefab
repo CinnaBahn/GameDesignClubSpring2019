@@ -10,7 +10,7 @@ PrefabInstance:
     - target: {fileID: 1808573965965286618, guid: 85dfeb15bf0162e4494a6ea13163fd9a,
         type: 3}
       propertyPath: m_Name
-      value: WimpyBlartlloonPrefab
+      value: WimpyBlartlloonVariant
       objectReference: {fileID: 0}
     - target: {fileID: 1808573965965286617, guid: 85dfeb15bf0162e4494a6ea13163fd9a,
         type: 3}
@@ -85,7 +85,7 @@ PrefabInstance:
     - target: {fileID: 1808573966334727907, guid: 85dfeb15bf0162e4494a6ea13163fd9a,
         type: 3}
       propertyPath: lift
-      value: 7.5
+      value: 1.9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 85dfeb15bf0162e4494a6ea13163fd9a, type: 3}

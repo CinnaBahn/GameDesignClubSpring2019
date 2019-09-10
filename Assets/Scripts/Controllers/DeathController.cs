@@ -1,21 +1,25 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public delegate void onRestartEarlyEventHandler();
-
 public class DeathController : Controller
 {
-    public event onRestartEarlyEventHandler onRestartEarly;
 
-    // Update is called once per frame
-    void Update()
+    public Action onRestartEarly;
+
+    private void restartEarly()
     {
-        if(active)
-            if (Input.GetButtonDown("Fire1"))
-            {
-                if (onRestartEarly != null)
-                    onRestartEarly();
-            }
+        if (onRestartEarly != null)
+            onRestartEarly();
+    }
+
+    private void OnEnable()
+    {
+        InputManager.instance.onPrimaryReleased += restartEarly;
+    }
+
+    private void OnDisable() {
+        InputManager.instance.onPrimaryReleased -= restartEarly;
     }
 }

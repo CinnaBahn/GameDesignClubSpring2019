@@ -25,8 +25,7 @@ public class Sword : MonoBehaviour
 
     public void Start()
     {
-        //GetComponent<GameplayController>().onParrySwing+= new onParrySwingEventHandler(spin);
-        Controller.gameplayController.onParrySpin += new onParrySpinEventHandler(spin);
+        Controller.gameplayController.onParrySpin += spin;
     }
 
     // called when spin button pressed

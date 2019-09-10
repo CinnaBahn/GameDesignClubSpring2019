@@ -23,8 +23,8 @@ public class StatsManager : MonoBehaviour
     void Start()
     {
         resetLives();
-        Countdown.instance.onCountdownReached += new onCountdownReachedEventHandler(setStartTime);
-        Goal.instance.onGoalReached += new onGoalReachedEventHandler(stopTime);
+        Countdown.instance.onCountdownReached += setStartTime;
+        Goal.instance.onGoalReached += stopTime;
     }
 
     private void setStartTime()

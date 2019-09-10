@@ -1,9 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public delegate void onSuccessfulGrappleEventHandler(Grapplable hookedOn);
-public delegate void onReleaseEventHandler(Grapplable releasedFrom);
 
 public class GrappleHook : MonoBehaviour
 {
@@ -13,8 +11,14 @@ public class GrappleHook : MonoBehaviour
         UNHOOKED
     }
 
-    public event onSuccessfulGrappleEventHandler onSuccessfulGrapple;
-    public event onReleaseEventHandler onRelease;
+    /*
+     * delegates that hold function to be called
+     * the <Grapplable> means that these functions take a Grapplable object as a parameter
+     * these return void
+     */
+    public Action<Grapplable> onSuccessfulGrapple;
+    public Action whileGrappled;
+    public Action<Grapplable> onRelease;
 
     public GameObject hookMasterPrefab;
     private HookPicker hookPicker;
@@ -25,7 +29,7 @@ public class GrappleHook : MonoBehaviour
     private GrappleHookFSM state = GrappleHookFSM.UNHOOKED;
     public float minRopeLength = 3;
     public float maxRopeLength = 35;
-    public float contractSpeed = .15f;
+    public float contractSpeed = .2f;
     public float loosenSpeed = .15f;
     private Grapplable hookedOn;
 
@@ -44,12 +48,11 @@ public class GrappleHook : MonoBehaviour
     private void Start()
     {
         // events
-        //GameplayController pc = GetComponent<GameplayController>();
         GameplayController pc = Controller.gameplayController;
-        pc.onGrappleFired += new onGrappleFiredEventHandler(fire);
-        pc.onGrappleReleased += new onGrappleReleasedEventHandler(release);
-        pc.onGrappleContracted += new onGrappleContractedEventHandler(contract);
-        pc.onGrappleLoosened += new onGrappleLoosenedEventHandler(loosen);
+        pc.onGrappleFired += fire;
+        pc.onGrappleReleased += release;
+        pc.onGrappleContracted += contract;
+        pc.onGrappleLoosened += loosen;
     }
 
     public bool isHooked()
@@ -124,12 +127,13 @@ public class GrappleHook : MonoBehaviour
     {
         while(true)
         {
+            // check if what we're hooked onto still exists (in case it gets destroyed while we're swinging)
             if (!hookedOn)
             {
                 release();
                 break;
             }
-            //draw
+            // draw
             lineRenderer.SetPosition(0, gameObject.transform.position);
             lineRenderer.SetPosition(1, hookedOn.transform.position);
             yield return null;

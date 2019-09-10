@@ -6,7 +6,14 @@ public class StatsWindow : Window
 {
     private void Start()
     {
-        Goal.instance.onGoalReached += new onGoalReachedEventHandler(createWindow);
-        Controller.resultsController.onStatsOK += new onStatsOKEventHandler(destroyWindow);
+        Goal.instance.onGoalReached += createWindow;
+        Controller.resultsController.onStatsOK += destroyWindow;
+    }
+
+    protected override void createWindow()
+    {
+        base.createWindow();
+
+        getTextComponent("Time").text = StatsManager.instance.getTime().ToString();
     }
 }

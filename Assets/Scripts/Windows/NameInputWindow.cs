@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,17 +11,28 @@ public class NameInputWindow : Window
     private Text nickname;
     private int currentSlot = 0;
 
-    private void Start()
+    private void OnEnable()
     {
         ResultsController r = Controller.resultsController;
-        r.onStatsOK += new onStatsOKEventHandler(createWindow);
-        r.onNameInputOK += new onNameInputOKEventHandler(uploadName);
-        r.onNameInputOK += new onNameInputOKEventHandler(destroyWindow);
+        r.onStatsOK += createWindow;
+        r.onNameInputOK += destroyWindow;
 
-        r.onLetterCycleNext += new onLetterCycleNextEventHandler(nextLetter);
-        r.onLetterCyclePrev += new onLetterCyclePrevEventHandler(prevLetter);
-        r.onLetterSlotNext += new onLetterSlotNextEventHandler(nextSlot);
-        r.onLetterSlotPrev += new onLetterSlotPrevEventHandler(prevSlot);
+        r.onLetterCycleNext += nextLetter;
+        r.onLetterCyclePrev += prevLetter;
+        r.onLetterSlotNext += nextSlot;
+        r.onLetterSlotPrev += prevSlot;
+    }
+
+    private void OnDisable()
+    {
+        ResultsController r = Controller.resultsController;
+        r.onStatsOK -= createWindow;
+        r.onNameInputOK -= destroyWindow;
+
+        r.onLetterCycleNext -= nextLetter;
+        r.onLetterCyclePrev -= prevLetter;
+        r.onLetterSlotNext -= nextSlot;
+        r.onLetterSlotPrev -= prevSlot;
     }
 
     protected override void createWindow()
@@ -31,13 +43,7 @@ public class NameInputWindow : Window
         for (int i = 0; i < numSlots; i++)
             slots[i] = ' ';
 
-        // set nicknameText reference
-        foreach (Text t in window.transform.GetComponentsInChildren<Text>())
-            if (t.gameObject.name == "Nickname")
-            {
-                nickname = t;
-                break;
-            }
+        nickname = getTextComponent("Nickname");
     }
 
     private void changeSlotsBy(int by) { currentSlot = Mathf.Clamp(currentSlot + by, 0, numSlots - 1); }

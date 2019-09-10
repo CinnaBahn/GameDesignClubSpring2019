@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/InvolvementFair/CaveDemo.unity
     guid: 4a21744f55331454eb0d4fe1d3923a4e
+  - enabled: 1
+    path: Assets/Scenes/WindyTunnel.unity
+    guid: 8cdb5b700e3ff20488733ad182ea7619
   m_configObjects: {}

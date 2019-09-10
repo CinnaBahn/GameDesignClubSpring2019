@@ -6,7 +6,7 @@ public class ScoreboardWindow : Window
 {
     private void Start()
     {
-        Controller.resultsController.onNameInputOK += new onNameInputOKEventHandler(createWindow);
-        Controller.resultsController.onScoreboardOK += new onScoreboardOKEventHandler(destroyWindow);
+        Controller.resultsController.onNameInputOK += createWindow;
+        Controller.resultsController.onScoreboardOK += destroyWindow;
     }
 }

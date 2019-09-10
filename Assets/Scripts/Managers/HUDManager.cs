@@ -24,8 +24,8 @@ public class HUDManager : MonoBehaviour
 
     private void Start()
     {
-        Countdown.instance.onTick += new onTickEventHandler(updateCountdownHUD);
-        Countdown.instance.onCountdownReached += new onCountdownReachedEventHandler(hideCountdownHUD);
+        Countdown.instance.onTick += updateCountdownHUD;
+        Countdown.instance.onCountdownReached += hideCountdownHUD;
     }
 
     private void updateCountdownHUD(float timeLeft)

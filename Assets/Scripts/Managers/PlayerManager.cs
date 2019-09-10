@@ -1,8 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public delegate void onDeathAnimationFinishEventHandler();
 
 public class PlayerManager : MonoBehaviour
 {
@@ -11,7 +10,7 @@ public class PlayerManager : MonoBehaviour
     private GameObject player;
     private GrappleHook grapplehook;
 
-    public event onDeathAnimationFinishEventHandler onDeathAnimationFinish;
+    public Action onDeathAnimationFinish;
 
     public static PlayerManager instance;
 
@@ -27,7 +26,7 @@ public class PlayerManager : MonoBehaviour
     private void Start()
     {
         // listen to GameplayManager for when the player is ordered to die
-        GameplayManager.instance.onDeath += new onDeathEventHandler(die);
+        GameplayManager.instance.onDeath += die;
 
         resetPosition();
     }

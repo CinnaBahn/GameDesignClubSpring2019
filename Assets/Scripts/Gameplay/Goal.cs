@@ -1,13 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public delegate void onGoalReachedEventHandler();
 
 public class Goal : MonoBehaviour
 {
     public static Goal instance;
-    public event onGoalReachedEventHandler onGoalReached;
+    public Action onGoalReached;
     private bool alreadyReached = false;
 
     private void Awake()

@@ -1,16 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public delegate void onCountdownReachedEventHandler();
-public delegate void onTickEventHandler(float timeLeft);
 
 public class Countdown : MonoBehaviour
 {
     public static Countdown instance;
     public int timeUntilControlEnabled = 3;
-    public event onCountdownReachedEventHandler onCountdownReached;
-    public event onTickEventHandler onTick;
+    public Action onCountdownReached;
+    public Action<float> onTick;
 
     private void Awake()
     {

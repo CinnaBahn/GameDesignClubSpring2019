@@ -12,6 +12,7 @@ public class RowMaker : MonoBehaviour
     public int copies = 2;
     public float spacing = 5;
     public float angle = 0;
+    public bool rotateObjects = false;
     public float twist = 0;
 
     [SerializeField]
@@ -56,6 +57,8 @@ public class RowMaker : MonoBehaviour
             //y *= Mathf.Sin(twist * i);
 
             copyList[i].transform.position = transform.position + new Vector3(x, y);
+            if(rotateObjects)
+                copyList[i].transform.localRotation = Quaternion.Euler(0, 0, angle);
         }
     }
 

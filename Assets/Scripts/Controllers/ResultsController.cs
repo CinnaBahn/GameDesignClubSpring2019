@@ -1,17 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-//public delegate void onFocusEventHandler(); // when the ResultsController is the current controller
-public delegate void onStatsOKEventHandler();
-public delegate void onNameInputOKEventHandler();
-public delegate void onScoreboardOKEventHandler();
-//public delegate void onUnfocusEventHandler(); // when the ResultsController is not the current controller
-
-public delegate void onLetterCycleNextEventHandler();
-public delegate void onLetterCyclePrevEventHandler();
-public delegate void onLetterSlotNextEventHandler();
-public delegate void onLetterSlotPrevEventHandler();
 
 public class ResultsController : Controller
 {
@@ -24,29 +14,89 @@ public class ResultsController : Controller
     }
 
     private ResultsFSM state = ResultsFSM.HIDDEN;
-    private EDirection lastDpad = EDirection.CENTER;
 
-    //public event onFocusEventHandler onFocus;
-    public event onStatsOKEventHandler onStatsOK;
-    public event onNameInputOKEventHandler onNameInputOK;
-    public event onScoreboardOKEventHandler onScoreboardOK;
-    //public event onUnfocusEventHandler onUnfocus;
-
-    public event onLetterCycleNextEventHandler onLetterCycleNext;
-    public event onLetterCyclePrevEventHandler onLetterCyclePrev;
-    public event onLetterSlotNextEventHandler onLetterSlotNext;
-    public event onLetterSlotPrevEventHandler onLetterSlotPrev;
+    public Action onStatsOK, onNameInputOK, onScoreboardOK;
+    public Action onLetterCycleNext, onLetterCyclePrev, onLetterSlotNext, onLetterSlotPrev;
 
     public GameObject scoreboardPrefab;
     private GameObject scoreboardWindow;
 
-    private void Start()
+    private void statsOK(){ toState(ResultsFSM.STATS, ResultsFSM.NAME_INPUT); }
+    private void nameInputOK(){ toState(ResultsFSM.NAME_INPUT, ResultsFSM.SCOREBOARD); }
+
+    private bool upFired = false;
+    private void upPressed()
     {
-        Goal.instance.onGoalReached += new onGoalReachedEventHandler(toStats);
-        
-        onStatsOK += new onStatsOKEventHandler(toNameInput);
-        onNameInputOK += new onNameInputOKEventHandler(toScoreboard);
-        //onScoreboardOK += new onScoreboardOK(onResultsClose);
+        if (state == ResultsFSM.NAME_INPUT)
+            if (onLetterCycleNext != null)
+                onLetterCycleNext();
+    }
+
+    private void downPressed()
+    {
+        if (state == ResultsFSM.NAME_INPUT)
+            if (onLetterCyclePrev != null)
+                onLetterCyclePrev();
+    }
+
+    private void leftPressed()
+    {
+        if (state == ResultsFSM.NAME_INPUT)
+            if (onLetterSlotPrev != null)
+                onLetterSlotPrev();
+    }
+
+    private void rightPressed()
+    {
+        if (state == ResultsFSM.NAME_INPUT)
+            if (onLetterSlotNext != null)
+                onLetterSlotNext();
+    }
+
+    private void primaryPressed()
+    {
+        if (state == ResultsFSM.STATS)
+        {
+            if (onStatsOK != null)
+                onStatsOK();
+        }
+        else if (state == ResultsFSM.NAME_INPUT)
+        {
+            if (onNameInputOK != null)
+                onNameInputOK();
+        }
+        else if (state == ResultsFSM.SCOREBOARD)
+        {
+            if (onScoreboardOK != null)
+                onScoreboardOK();
+        }
+    }
+
+    private void OnEnable()
+    {
+        toState(ResultsFSM.HIDDEN, ResultsFSM.STATS); state = ResultsFSM.STATS;
+
+
+        // this class subscribes to its own events for consistency
+        onStatsOK += statsOK;
+        onNameInputOK += nameInputOK;
+
+        InputManager.instance.onPrimaryPressed += primaryPressed;
+        InputManager.instance.onUpPressed += upPressed;
+        InputManager.instance.onDownPressed += downPressed;
+        InputManager.instance.onLeftPressed += leftPressed;
+        InputManager.instance.onRightPressed += rightPressed;
+    }
+    private void OnDisable()
+    {
+        onStatsOK -= statsOK;
+        onNameInputOK -= nameInputOK;
+
+        InputManager.instance.onPrimaryPressed -= primaryPressed;
+        InputManager.instance.onUpPressed -= upPressed;
+        InputManager.instance.onDownPressed -= downPressed;
+        InputManager.instance.onLeftPressed -= leftPressed;
+        InputManager.instance.onRightPressed -= rightPressed;
     }
 
     private void toState(ResultsFSM requiredFrom, ResultsFSM to)
@@ -54,45 +104,5 @@ public class ResultsController : Controller
         if (state == requiredFrom)
             state = to;
     }
-
-    private void toStats() { toState(ResultsFSM.HIDDEN, ResultsFSM.STATS); }
-    private void toNameInput() { toState(ResultsFSM.STATS, ResultsFSM.NAME_INPUT); }
-    private void toScoreboard() { toState(ResultsFSM.NAME_INPUT, ResultsFSM.SCOREBOARD); }
-
-    private void Update()
-    {
-        if (active)
-        {
-            if (state == ResultsFSM.STATS)
-            {
-                if (Input.GetButtonDown("Fire1"))
-                    onStatsOK();
-            }
-            else if (state == ResultsFSM.NAME_INPUT)
-            {
-                if (Input.GetButtonDown("Fire1"))
-                    onNameInputOK();
-
-                int vert = getVerticalInput();
-                if (vert == 1 && lastDpad != EDirection.UP) // only trigger if this is the 1st frame pressing up, same for following event calls
-                    onLetterCycleNext();
-                else if (vert == -1 && lastDpad != EDirection.DOWN)
-                    onLetterCyclePrev();
-
-                int hor = getHorizontalInput();
-                if (hor == 1 && lastDpad != EDirection.RIGHT)
-                    onLetterSlotNext();
-                else if (hor == -1 && lastDpad != EDirection.LEFT)
-                    onLetterSlotPrev();
-            }
-            else if(state == ResultsFSM.SCOREBOARD)
-            {
-                if (Input.GetButtonDown("Fire1"))
-                    onScoreboardOK();
-            }
-            lastDpad = Direction.getAimingDirection();
-        }
-    }
-
 
 }

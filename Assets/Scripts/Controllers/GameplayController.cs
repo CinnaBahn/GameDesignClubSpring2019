@@ -1,21 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public delegate void onGrappleFiredEventHandler();
-public delegate void onGrappleReleasedEventHandler();
-public delegate void onGrappleContractedEventHandler();
-public delegate void onGrappleLoosenedEventHandler();
-
-public delegate void onSwingLeftEventHandler();
-public delegate void onSwingRightEventHandler();
-public delegate void onSwingRelaxEventHandler();
-
-public delegate void onParrySpinEventHandler();
-
 public class GameplayController : Controller {
 
-    //private GrappleHook grappleHook;
     enum GameplayFSM
     {
         HOOKED,
@@ -23,86 +12,112 @@ public class GameplayController : Controller {
     }
 
     private GameplayFSM state = GameplayFSM.FREE;
+    
+    public Action onGrappleFired, onGrappleReleased;
+    public Action onGrappleContracted, onGrappleLoosened;
+    public Action onSwingLeft, onSwingRight, onSwingRelax;
+    public Action onParrySpin;
 
-    public event onGrappleFiredEventHandler onGrappleFired;
-    public event onGrappleReleasedEventHandler onGrappleReleased;
+    // primary
+    private void primaryPressed()
+    {
+        if (state == GameplayFSM.FREE)
+            if (onGrappleFired != null)
+                onGrappleFired();
+    }
+    private void primaryReleased()
+    {
+        if (state == GameplayFSM.HOOKED)
+            if (onGrappleReleased != null)
+                onGrappleReleased();
+    }
 
-    public event onGrappleContractedEventHandler onGrappleContracted;
-    public event onGrappleLoosenedEventHandler onGrappleLoosened;
+    //secondary
+    private void secondaryPressed()
+    {
+        //if (state == GameplayFSM.FREE)
+            if (onParrySpin != null)
+                onParrySpin();
+    }
 
-    public event onSwingLeftEventHandler onSwingLeft;
-    public event onSwingRightEventHandler onSwingRight;
-    public event onSwingRelaxEventHandler onSwingRelax;
+    // dpad
+    private void allDirectionsReleased()
+    {
+        if (state == GameplayFSM.HOOKED)
+            if (onSwingRelax != null)
+                onSwingRelax();
+    }
+    private void upPressed()
+    {
+        if (state == GameplayFSM.HOOKED)
+            if (onGrappleContracted != null)
+                onGrappleContracted();
+    }
+    private void downPressed()
+    {
+        if (state == GameplayFSM.HOOKED)
+            if (onGrappleLoosened != null)
+                onGrappleLoosened();
+    }
+    private void leftPressed()
+    {
+        if (state == GameplayFSM.HOOKED)
+            if (onSwingLeft != null)
+                onSwingLeft();
+    }
+    private void rightPressed()
+    {
+        if (state == GameplayFSM.HOOKED)
+            if (onSwingRight != null)
+                onSwingRight();
+    }
 
-    public event onParrySpinEventHandler onParrySpin;
+    private void OnEnable()
+    {
+        // grapple
+        InputManager.instance.onPrimaryPressed += primaryPressed;
+        InputManager.instance.onPrimaryReleased += primaryReleased;
+
+        // parry
+        InputManager.instance.onSecondaryPressed += secondaryPressed;
+
+        // dpad
+        InputManager.instance.onAllDirectionsReleased += allDirectionsReleased;
+        InputManager.instance.onUpPressed += upPressed;
+        InputManager.instance.onDownPressed += downPressed;
+        InputManager.instance.onLeftPressed += leftPressed;
+        InputManager.instance.onRightPressed += rightPressed;
+    }
+
+    private void OnDisable()
+    {
+        // grapple
+        InputManager.instance.onPrimaryPressed -= primaryPressed;
+        InputManager.instance.onPrimaryReleased -= primaryReleased;
+
+        // parry
+        InputManager.instance.onSecondaryPressed -= secondaryPressed;
+
+        // dpad
+        InputManager.instance.onAllDirectionsReleased -= allDirectionsReleased;
+        InputManager.instance.onUpPressed -= upPressed;
+        InputManager.instance.onDownPressed -= downPressed;
+        InputManager.instance.onLeftPressed -= leftPressed;
+        InputManager.instance.onRightPressed -= rightPressed;
+    }
 
     void Start()
     {
         GrappleHook g = PlayerManager.instance.getPlayer().GetComponent<GrappleHook>();
-        g.onSuccessfulGrapple += new onSuccessfulGrappleEventHandler(toHooked);
-        g.onRelease += new onReleaseEventHandler(toFree);
+        g.onSuccessfulGrapple += toHooked;
+        g.onRelease += toFree;
     }
 
     private void toHooked(Grapplable hookedOn) { state = GameplayFSM.HOOKED; }
     private void toFree(Grapplable releasedFrom) { state = GameplayFSM.FREE; }
 
-    void doHookedInput()
-    {
-
-        if (Input.GetButtonUp("Fire1"))
-        {
-            if (onGrappleReleased != null)
-                onGrappleReleased();
-        }
-        else
-        {
-            int vert = getVerticalInput();
-            if (vert == 1)
-                onGrappleContracted();
-            else if (vert == -1)
-                onGrappleLoosened();
-
-            int hor = getHorizontalInput();
-            if (hor == 1)
-                onSwingRight();
-            else if (hor == -1)
-                onSwingLeft();
-            else
-                onSwingRelax();
-        }
-
-    }
-
-
     void doFreeInput()
     {
-
-        /*
-        switch (getDpadDirection())
-        {
-            case (1): //right pressed
-                break;
-            case (4): //up-right pressed
-                break;
-            case (3): //up pressed
-                break;
-            case (2): //up-left pressed
-                break;
-            case (-1): //left pressed
-                break;
-            case (-4): //down-left pressed
-                break;
-            case (-3): //down pressed
-                break;
-            case (-2): //down-right pressed
-                break;
-        }*/
-        if (Input.GetButtonDown("Fire1"))
-        {
-            if (onGrappleFired != null)
-                onGrappleFired();
-        }
-
         if (Input.GetButtonDown("Fire2"))
         {
             if (onParrySpin != null)
@@ -115,14 +130,5 @@ public class GameplayController : Controller {
             PlayerManager.instance.resetPosition();
         }
 
-    }
-
-
-    void Update () {
-        if(active)
-            if (state == GameplayFSM.HOOKED)
-                doHookedInput();
-            else if(state == GameplayFSM.FREE)
-                doFreeInput();
     }
 }

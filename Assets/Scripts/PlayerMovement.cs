@@ -22,9 +22,9 @@ public class PlayerMovement : MonoBehaviour
     {
         //GameplayController pc = GetComponent<GameplayController>();
         GameplayController pc = Controller.gameplayController;
-        pc.onGrappleReleased += new onGrappleReleasedEventHandler(resetSwing);
-        pc.onSwingRelax += new onSwingRelaxEventHandler(resetSwing);
-        pc.onSwingLeft += new onSwingLeftEventHandler(swingLeft);
-        pc.onSwingRight += new onSwingRightEventHandler(swingRight);
+        pc.onGrappleReleased += resetSwing;
+        pc.onSwingRelax += resetSwing;
+        pc.onSwingLeft += swingLeft;
+        pc.onSwingRight += swingRight;
     }
 }

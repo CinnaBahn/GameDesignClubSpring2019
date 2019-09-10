@@ -1,9 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-public delegate void onDeathEventHandler(ECauseOfDeath cause);
 
 public class GameplayManager : MonoBehaviour
 {
@@ -11,28 +10,26 @@ public class GameplayManager : MonoBehaviour
     //public bool controlEnabled = false;
     private float timeOfControlEnabled = -1;
 
-    public event onDeathEventHandler onDeath;
+    // events of this class
+    public Action<ECauseOfDeath> onDeath;
 
     void Awake()
     {
         instance = this;
     }
 
-    private void Start()
+    private void countdownReached(){ timeOfControlEnabled = Time.time; }
+    private void goalReached(){ }
+
+    private void OnEnable()
     {
-        Countdown.instance.onCountdownReached += new onCountdownReachedEventHandler(startLevel);
-        Goal.instance.onGoalReached += new onGoalReachedEventHandler(beatLevel);
+        Countdown.instance.onCountdownReached += countdownReached;
+        Goal.instance.onGoalReached += goalReached;
     }
-
-    private void startLevel()
+    private void OnDisable()
     {
-        //controlEnabled = true;
-        timeOfControlEnabled = Time.time;
-    }
-
-    public void beatLevel()
-    {
-
+        Countdown.instance.onCountdownReached -= countdownReached;
+        Goal.instance.onGoalReached -= goalReached;
     }
 
     public void killPlayer(ECauseOfDeath cause)
