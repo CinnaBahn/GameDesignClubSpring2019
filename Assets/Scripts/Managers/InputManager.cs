@@ -10,6 +10,7 @@ public class InputManager : MonoBehaviour
     public Action onPrimaryPressed, onSecondaryPressed;
     public Action onPrimaryReleased, onSecondaryReleased;
 
+    public Action onDirectionChanged;
     public Action onUpPressed, onDownPressed, onLeftPressed, onRightPressed;
     public Action onAllDirectionsReleased, onUpReleased, onDownReleased, onLeftReleased, onRightReleased;
 
@@ -49,6 +50,9 @@ public class InputManager : MonoBehaviour
 
         // dpad
         EDirection currentDir = Direction.getAimingDirection();
+        if (currentDir != lastDir)
+            if (onDirectionChanged != null)
+                onDirectionChanged();
         switch (currentDir)
         {
             case EDirection.CENTER:
@@ -96,6 +100,6 @@ public class InputManager : MonoBehaviour
                     onLeftPressed();
                 break;
         }
-        
+        lastDir = currentDir;
     }
 }

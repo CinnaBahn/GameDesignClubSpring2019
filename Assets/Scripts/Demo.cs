@@ -24,11 +24,11 @@ public class Demo : MonoBehaviour
             {
                 case EDirection.LEFT:
                     Controller.gameplayController.onSwingLeft();
-                    print("gonna swing LEFT!");
+                    //print("gonna swing LEFT!");
                     break;
                 case EDirection.RIGHT:
                     Controller.gameplayController.onSwingRight();
-                    print("gonna swing RIGHT!");
+                    //print("gonna swing RIGHT!");
                     break;
             }
     }

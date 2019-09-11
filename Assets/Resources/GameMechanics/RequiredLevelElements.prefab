@@ -130,8 +130,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9206a250a2b59042b5f6a57a84ca6e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  active: 0
-  demoLevel: 
 --- !u!114 &2025242505741430415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,7 +142,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4e1c15e42647614ab40b63c6ea3cb07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  active: 0
 --- !u!114 &2536636501007215885
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157,7 +154,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bc2ae01bc1892f439ff532fbf71b8b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  active: 0
   scoreboardPrefab: {fileID: 0}
 --- !u!114 &9049218061020113068
 MonoBehaviour:
@@ -171,7 +167,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc1b8454874658643af11c99f5107ff5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  active: 0
 --- !u!1 &7013378459292988504
 GameObject:
   m_ObjectHideFlags: 0

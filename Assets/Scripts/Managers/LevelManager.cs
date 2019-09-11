@@ -27,6 +27,10 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
+        TitleWindow t = FindObjectOfType<TitleWindow>();
+        if (t)
+            t.onPlay += toNextLevel;
+
         Controller.resultsController.onScoreboardOK += toNextLevel;
         PlayerManager.instance.onDeathAnimationFinish += restartLevel;
         Controller.deathController.onRestartEarly += restartLevel;

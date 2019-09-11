@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/InvolvementFair/Title.unity
+    path: Assets/Scenes/Title.unity
     guid: 63fdf8d4d57d786468ae7458d560e27b
   - enabled: 1
     path: Assets/Scenes/InvolvementFair/CaveDemo.unity

@@ -55,20 +55,20 @@ public class ResultsController : Controller
 
     private void primaryPressed()
     {
-        if (state == ResultsFSM.STATS)
+        switch (state)
         {
-            if (onStatsOK != null)
-                onStatsOK();
-        }
-        else if (state == ResultsFSM.NAME_INPUT)
-        {
-            if (onNameInputOK != null)
-                onNameInputOK();
-        }
-        else if (state == ResultsFSM.SCOREBOARD)
-        {
-            if (onScoreboardOK != null)
-                onScoreboardOK();
+            case ResultsFSM.STATS:
+                if (onStatsOK != null)
+                    onStatsOK();
+                break;
+            case ResultsFSM.NAME_INPUT:
+                if (onNameInputOK != null)
+                    onNameInputOK();
+                break;
+            case ResultsFSM.SCOREBOARD:
+                if (onScoreboardOK != null)
+                    onScoreboardOK();
+                break;
         }
     }
 
