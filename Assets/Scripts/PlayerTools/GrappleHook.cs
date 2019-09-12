@@ -22,8 +22,9 @@ public class GrappleHook : MonoBehaviour
 
     public GameObject hookMasterPrefab;
     private HookPicker hookPicker;
+
     private LineRenderer lineRenderer;
-    //private ConstantForce2D swingForce;
+
     private DistanceJoint2D ropeJoint;
 
     private GrappleHookFSM state = GrappleHookFSM.UNHOOKED;
@@ -40,25 +41,28 @@ public class GrappleHook : MonoBehaviour
         lineRenderer = GetComponent<LineRenderer>();
         GetComponent<LineRenderer>().positionCount = 2;
 
-        //swingForce = GetComponent<ConstantForce2D>();
-
         hookPicker = Instantiate<GameObject>(hookMasterPrefab).GetComponent<HookPicker>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        // events
-        GameplayController pc = Controller.gameplayController;
-        pc.onGrappleFired += fire;
-        pc.onGrappleReleased += release;
-        pc.onGrappleContracted += contract;
-        pc.onGrappleLoosened += loosen;
+        InputManager i = InputManager.instance;
+        i.onPrimaryPressed += fire;
+        i.onPrimaryReleased += release;
+        i.onUpPressed += contract;
+        i.onDownPressed += loosen;
     }
 
-    public bool isHooked()
+    private void OnDisable()
     {
-        return state == GrappleHookFSM.HOOKED;
+        InputManager i = InputManager.instance;
+        i.onPrimaryPressed -= fire;
+        i.onPrimaryReleased -= release;
+        i.onUpPressed -= contract;
+        i.onDownPressed -= loosen;
     }
+
+    public bool isHooked() { return state == GrappleHookFSM.HOOKED; }
 
     public void fire()
     {
@@ -113,15 +117,8 @@ public class GrappleHook : MonoBehaviour
         }
     }
 
-    public void contract()
-    {
-        ropeJoint.distance = Mathf.Clamp(ropeJoint.distance - contractSpeed, minRopeLength, maxRopeLength / 2);
-    }
-
-    public void loosen()
-    {
-        ropeJoint.distance = Mathf.Clamp(ropeJoint.distance + loosenSpeed, minRopeLength, maxRopeLength / 2);
-    }
+    public void contract() { ropeJoint.distance = Mathf.Clamp(ropeJoint.distance - contractSpeed, minRopeLength, maxRopeLength / 2); }
+    public void loosen() { ropeJoint.distance = Mathf.Clamp(ropeJoint.distance + loosenSpeed, minRopeLength, maxRopeLength / 2); }
 
     private IEnumerator holdOn()
     {

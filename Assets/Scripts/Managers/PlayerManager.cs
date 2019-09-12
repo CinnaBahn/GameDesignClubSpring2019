@@ -40,7 +40,7 @@ public class PlayerManager : MonoBehaviour
         //print("let go!");
     }
 
-    public void die(ECauseOfDeath cause)
+    public void die()
     {
         //print("oh no i died. i need to animate");
         StartCoroutine(dieAnimation());

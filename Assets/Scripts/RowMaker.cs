@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
+//using UnityEditor;
 using UnityEngine;
 
 // this class duplicates a prefab in a row, useful for rows of hooks that need to be evenly spaced
@@ -115,6 +115,7 @@ public class RowMaker : MonoBehaviour
     // create copy and add to copyList
     private void addCopy()
     {
+        /*
         string path = AssetDatabase.GetAssetPath(prefab);
         //remove "Assets/Resources/" and ".prefab" from the path
         path = path.Replace("Assets/Resources/", "");
@@ -123,7 +124,8 @@ public class RowMaker : MonoBehaviour
 
         GameObject copy = Instantiate(Resources.Load(path, typeof(GameObject)), transform) as GameObject;
         //GameObject copy = GameObject.Instantiate(Resources.Load("Hook", typeof(GameObject)), transform) as GameObject;
-        //GameObject copy = GameObject.Instantiate(prefab, transform);
+        */
+        GameObject copy = GameObject.Instantiate(prefab, transform);
         addCopy(copy);
     }
 

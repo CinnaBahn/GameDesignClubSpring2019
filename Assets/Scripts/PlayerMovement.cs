@@ -11,20 +11,24 @@ public class PlayerMovement : MonoBehaviour
     public void swingLeft() { swing(EDirection.LEFT); }
     public void resetSwing() { force.force = Vector2.zero; }
 
-    void setupComponents() { force = GetComponent<ConstantForce2D>(); }
-
     private void Awake()
     {
-        setupComponents();
+        force = GetComponent<ConstantForce2D>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        //GameplayController pc = GetComponent<GameplayController>();
-        GameplayController pc = Controller.gameplayController;
-        pc.onGrappleReleased += resetSwing;
-        pc.onSwingRelax += resetSwing;
-        pc.onSwingLeft += swingLeft;
-        pc.onSwingRight += swingRight;
+        InputManager i = InputManager.instance;
+        i.onLeftPressed += swingLeft;
+        i.onRightPressed += swingRight;
+        i.onDirectionChanged += resetSwing;
+    }
+
+    private void OnDisable()
+    {
+        InputManager i = InputManager.instance;
+        i.onLeftPressed -= swingLeft;
+        i.onRightPressed -= swingRight;
+        i.onDirectionChanged -= resetSwing;
     }
 }

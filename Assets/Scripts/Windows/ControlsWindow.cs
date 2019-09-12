@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Responsible for handling input when player selects "Controls" from the Title Menu.
+/// </summary>
 public class ControlsWindow : Window
 {
-    // Start is called before the first frame update
-    void Start()
+    /// <inheritdoc/>
+    public override void DisableControls()
     {
-        
+        throw new System.NotImplementedException();
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <inheritdoc/>
+    public override void EnableControls()
     {
-        
+        throw new System.NotImplementedException();
     }
 }

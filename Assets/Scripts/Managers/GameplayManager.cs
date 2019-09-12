@@ -4,32 +4,48 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameplayManager : MonoBehaviour
+public class GameplayManager : MonoBehaviour, IControllable
 {
     public static GameplayManager instance;
     //public bool controlEnabled = false;
     private float timeOfControlEnabled = -1;
 
     // events of this class
-    public Action<ECauseOfDeath> onDeath;
+    //public Action<ECauseOfDeath> onDeath;
+    public Action onDeath;
 
     void Awake()
     {
         instance = this;
     }
 
-    private void countdownReached(){ timeOfControlEnabled = Time.time; }
-    private void goalReached(){ }
+    public void EnableControls()
+    {
+        GameObject p = PlayerManager.instance.getPlayer();
+        p.GetComponent<GrappleHook>().enabled = p.GetComponent<Sword>().enabled = p.GetComponent<PlayerMovement>().enabled = true;
+        timeOfControlEnabled = Time.time;
+    }
+
+    public void DisableControls()
+    {
+        GameObject p = PlayerManager.instance.getPlayer();
+        p.GetComponent<GrappleHook>().enabled = p.GetComponent<Sword>().enabled = p.GetComponent<PlayerMovement>().enabled = false;
+    }
 
     private void OnEnable()
     {
-        Countdown.instance.onCountdownReached += countdownReached;
-        Goal.instance.onGoalReached += goalReached;
+        Countdown.instance.onCountdownReached += EnableControls;
+        onDeath += DisableControls;
+        Goal.instance.onGoalReached += DisableControls;
+        //Goal.instance.onGoalReached += goalReached;
     }
     private void OnDisable()
     {
-        Countdown.instance.onCountdownReached -= countdownReached;
-        Goal.instance.onGoalReached -= goalReached;
+        Countdown.instance.onCountdownReached -= EnableControls;
+        onDeath -= DisableControls;
+        Goal.instance.onGoalReached -= DisableControls;
+        DisableControls();
+        //Goal.instance.onGoalReached -= goalReached;
     }
 
     public void killPlayer(ECauseOfDeath cause)
@@ -50,7 +66,8 @@ public class GameplayManager : MonoBehaviour
 
         // call event for all listeners
         if (onDeath != null)
-            onDeath(cause);
+            onDeath();
+            //onDeath(cause);
     }
 
     public void gameOver()

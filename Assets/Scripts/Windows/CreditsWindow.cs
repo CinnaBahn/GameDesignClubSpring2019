@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Responsible for handling input when the player selects "Credits" from the Title Menu.
+/// </summary>
 public class CreditsWindow : Window
 {
-    // Start is called before the first frame update
-    void Start()
+    /// <inheritdoc/>
+    public override void DisableControls()
     {
-        
+        throw new System.NotImplementedException();
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <inheritdoc/>
+    public override void EnableControls()
     {
-        
+        throw new System.NotImplementedException();
     }
 }

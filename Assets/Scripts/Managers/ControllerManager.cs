@@ -32,7 +32,7 @@ public class ControllerManager : MonoBehaviour
     public void toTitle() { changeControllers(Controller.titleController); }
     public void toCinematic(){ changeControllers(Controller.cinematicController); }
     public void toGameplay() { changeControllers(Controller.gameplayController); }
-    public void toDeath(ECauseOfDeath cause) { changeControllers(Controller.deathController); }
+    public void toDeath() { changeControllers(Controller.deathController); }
     public void toResults() { changeControllers(Controller.resultsController); }
 
     public void changeControllers(Controller c)

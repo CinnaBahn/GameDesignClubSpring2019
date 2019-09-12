@@ -23,9 +23,14 @@ public class Sword : MonoBehaviour
         sparkParticles = Instantiate<GameObject>(sparkParticlesPrefab, transform).GetComponent<ParticleSystem>();
     }
 
-    public void Start()
+    private void OnEnable()
     {
-        Controller.gameplayController.onParrySpin += spin;
+        InputManager.instance.onSecondaryPressed += spin;
+    }
+
+    private void OnDisable()
+    {
+        InputManager.instance.onSecondaryPressed -= spin;
     }
 
     // called when spin button pressed

@@ -1,19 +1,40 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// The class responsible for handling input when the level is just beaten by the player.
+/// </summary>
 public class StatsWindow : Window
 {
-    private void Start()
+    private void OnEnable()
     {
-        Goal.instance.onGoalReached += createWindow;
-        Controller.resultsController.onStatsOK += destroyWindow;
+        Goal.instance.onGoalReached += CreateWindow;
+        Goal.instance.onGoalReached += DisplayFinalTime;
+        Goal.instance.onGoalReached += EnableControls;
     }
 
-    protected override void createWindow()
-    {
-        base.createWindow();
+    private void DisplayFinalTime() { this.GetTextComponent("Time").text = StatsManager.instance.getTime().ToString(); }
 
-        getTextComponent("Time").text = StatsManager.instance.getTime().ToString();
+    public override void EnableControls()
+    {
+        InputManager i = InputManager.instance;
+        i.onPrimaryPressed += DestroyWindow;
+        i.onPrimaryPressed += DisableControls;
+    }
+
+    public override void DisableControls()
+    {
+        InputManager i = InputManager.instance;
+        i.onPrimaryPressed -= DisableControls;
+        i.onPrimaryPressed -= DestroyWindow;
+    }
+
+    private void OnDisable()
+    {
+        Goal.instance.onGoalReached -= CreateWindow;
+        Goal.instance.onGoalReached -= DisplayFinalTime;
+        Goal.instance.onGoalReached -= EnableControls;
     }
 }

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2196618866454490238}
   - component: {fileID: 7639924415565132331}
   - component: {fileID: 1432549941128902628}
+  - component: {fileID: 6526743601199813527}
   m_Layer: 0
   m_Name: Windows
   m_TagString: Untagged
@@ -44,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05c2c3bfbd86fd745839067f4e781495, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  windowPrefab: {fileID: 1011299773488422503, guid: 233cf89a819e24e4ba9d2e99f8a2075d,
+  WindowPrefab: {fileID: 1011299773488422503, guid: 233cf89a819e24e4ba9d2e99f8a2075d,
     type: 3}
 --- !u!114 &1432549941128902628
 MonoBehaviour:
@@ -58,7 +59,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ff139452ea86fb4d88272d05ee4c5e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  windowPrefab: {fileID: 1011299773488422503, guid: cb97ec1289e0a1e4fa92b0a811a632c9,
+  WindowPrefab: {fileID: 1011299773488422503, guid: cb97ec1289e0a1e4fa92b0a811a632c9,
+    type: 3}
+--- !u!114 &6526743601199813527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 435781973740547606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 617423359c4b6e343b07599aab395af8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WindowPrefab: {fileID: 1011299773488422503, guid: b514a737a3037b641b90ec70ef160c94,
     type: 3}
 --- !u!114 &7013378459101764990
 MonoBehaviour:
@@ -103,7 +118,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2205290040530271499
 Transform:
   m_ObjectHideFlags: 0

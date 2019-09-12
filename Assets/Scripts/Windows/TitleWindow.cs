@@ -4,37 +4,44 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Responsible for handling input for the Title Menu when the game first loads.
+/// </summary>
 public class TitleWindow : Window
 {
 
-    enum SelectionFSM
+    private enum SelectionFSM
     {
         PLAY,
         CONTROLS,
-        CREDITS
+        CREDITS,
     }
 
     private SelectionFSM state = SelectionFSM.PLAY;
-    public Action onPlay, onControls, onCredits;
+    public Action OnPlay, OnControls, OnCredits;
 
     private List<Image> bgs;
 
-    private bool ioValidOnEnabled = true; // if io not initialized yet, wait til Start to do it
     private void OnEnable()
     {
+
+    }
+
+    public override void EnableControls()
+    {
         InputManager io = InputManager.instance;
-        if (io)
-        {
-            io.onPrimaryReleased += confirm;
-            io.onUpPressed += rebouncePrevOption;
-            io.onDownPressed += rebounceNextOption;
-            io.onDirectionChanged += resetRebounce;
-        }
-        else
-            ioValidOnEnabled = false;
+        io.onPrimaryReleased += confirm;
+        io.onUpPressed += rebouncePrevOption;
+        io.onDownPressed += rebounceNextOption;
+        io.onDirectionChanged += resetRebounce;
     }
 
     private void OnDisable()
+    {
+
+    }
+
+    public override void DisableControls()
     {
         InputManager io = InputManager.instance;
         io.onPrimaryReleased -= confirm;
@@ -45,12 +52,8 @@ public class TitleWindow : Window
 
     private void Start()
     {
-        createWindow();
+        CreateWindow();
         bgs = new List<Image>(window.transform.GetComponentsInChildren<Image>());
-
-        // if InputManager hasn't initialized yet, do it here in the Start function
-        if (!ioValidOnEnabled)
-            OnEnable();
 
         prevOption();
     }
@@ -97,16 +100,16 @@ public class TitleWindow : Window
         switch (state)
         {
             case SelectionFSM.PLAY:
-                if (onPlay != null)
-                    onPlay();
+                if (OnPlay != null)
+                    OnPlay();
                 break;
             case SelectionFSM.CONTROLS:
-                if (onControls != null)
-                    onControls();
+                if (OnControls != null)
+                    OnControls();
                 break;
             case SelectionFSM.CREDITS:
-                if (onCredits != null)
-                    onCredits();
+                if (OnCredits != null)
+                    OnCredits();
                 break;
         }
     }
